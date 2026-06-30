@@ -1,0 +1,8 @@
+const express = require('express');
+const router = express.Router();
+const rhythmController = require('../controllers/rhythmController');
+
+router.get('/', rhythmController.getAllContent);
+router.post('/add', rhythmController.addContent);
+
+module.exports = router;
