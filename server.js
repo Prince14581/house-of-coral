@@ -3,13 +3,26 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+// Import Middleware
+const { calculateTreasuryFee } = require('./middleware/treasury');
+const { verifyUser } = require('./middleware/auth');
+
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(cors());
 
-// --- Database Connection (The robust way) ---
+// Apply Treasury Fee Middleware globally to all POST requests
+app.use((req, res, next) => {
+    if (req.method === 'POST') {
+        calculateTreasuryFee(req, res, next);
+    } else {
+        next();
+    }
+});
+
+// --- Database Connection ---
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -25,17 +38,18 @@ connectDB();
 
 // --- Import Pillar Routes ---
 const bazaarRoutes = require('./routes/bazaar');
-// Add other pillar routes here as you build them
+const rhythmRoutes = require('./routes/rhythm');
 
 // --- Route Registry ---
-app.use('/api/bazaar', bazaarRoutes);
-// app.use('/api/stage', stageRoutes); 
+// Bazaar is now secured with verifyUser middleware
+app.use('/api/bazaar', verifyUser, bazaarRoutes);
+app.use('/api/rhythm', rhythmRoutes);
 
-// --- Global Treasury Middleware ---
-app.use((req, res, next) => {
-    // This is where you intercept transactions for the 10% fee calculation
-    next();
+// --- Root Route ---
+app.get('/', (req, res) => {
+    res.send('House-of-Coral API is running.');
 });
 
+// --- Server Port ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`House-of-Coral Ecosystem running on port ${PORT}`));
