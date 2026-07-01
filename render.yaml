@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: house-of-coral-production
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: DB_URI
+        sync: false # Set this in the Render Dashboard
+      - key: VAULT_DB_URI
+        sync: false # Set this in the Render Dashboard
+      - key: JWT_SECRET
+        sync: false # Set this in the Render Dashboard
+    healthCheckPath: /api/health
+    plan: starter # Adjust based on expected traffic
