@@ -3,6 +3,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const { processSecureTransaction } = require('./services/transactionDispatcher');
 const { runIntegrityCheck } = require('./services/reconciliationService');
+const Ledger = require('./models/Ledger'); // ADDED: Missing import
 const SystemStatus = require('./models/SystemStatus');
 
 async function runProductionSimulation() {
@@ -15,20 +16,21 @@ async function runProductionSimulation() {
         await processSecureTransaction('TEST_USER_ID', 500, 'ARENA');
         console.log("Transaction successfully recorded.");
 
-        // 2. Simulate a "Drift" (Injecting data corruption to test the Halt)
+        // 2. Simulate a "Drift"
         console.log("Step 2: Simulating malicious ledger drift...");
         await Ledger.updateOne({ pillar: 'ARENA' }, { $inc: { fee: 50 } }); 
 
         // 3. Trigger Reconciliation
         console.log("Step 3: Running integrity check...");
-        const result = await runIntegrityCheck();
+        await runIntegrityCheck();
 
         // 4. Verify System Halt
         const status = await SystemStatus.findOne({ id: 'global_config' });
-        if (status.isLocked) {
+        if (status && status.isLocked) {
             console.log("SUCCESS: System halted automatically due to drift.");
         } else {
             console.error("FAILURE: System failed to halt.");
+            process.exit(1);
         }
 
         console.log("--- Simulation Complete ---");
