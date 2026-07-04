@@ -1,0 +1,12 @@
+const EventEmitter = require('events');
+
+class EventBus extends EventEmitter {
+    publish(eventName, data) {
+        console.log(`[EventBus] Emitting: ${eventName}`);
+        this.emit(eventName, data);
+    }
+}
+
+// Global Singleton for the platform
+const globalEventBus = new EventBus();
+module.exports = globalEventBus;
