@@ -1,0 +1,19 @@
+// controllers/ArenaController.js
+const MatchHistory = require('../models/MatchHistory');
+const SettlementService = require('../services/SettlementService');
+
+exports.endMatch = async (req, res) => {
+    try {
+        // ... Logic to save result to MatchHistory ...
+        const savedMatch = await MatchHistory.create(req.body);
+
+        // Auto-settlement
+        if (!savedMatch.isFlagged) {
+            await SettlementService.settleMatch(savedMatch.matchId);
+        }
+
+        res.status(200).json({ status: 'MATCH_SETTLED' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
