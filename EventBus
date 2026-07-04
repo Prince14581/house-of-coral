@@ -1,0 +1,15 @@
+const eventBus = require('../../../shared/events/event.bus');
+const LedgerEntry = require('../models/ledger.entry');
+
+// Listen to the EventBus
+eventBus.on('WALLET_UPDATED', async (data) => {
+    await LedgerEntry.create({
+        userId: data.userId,
+        amount: data.amount,
+        type: data.amount >= 0 ? 'CREDIT' : 'DEBIT',
+        reason: data.reason,
+        timestamp: new Date(),
+        meta: data.meta
+    });
+    console.log(`[Ledger] Transaction recorded for ${data.userId}`);
+});
