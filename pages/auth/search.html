@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search | House-of-Coral</title>
+    
+    <meta name="description" content="Discover items, users, and content across all House-of-Coral pillars.">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="theme-color" content="#0d1117">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://api.houseofcoral.com;">
+    
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="manifest" href="../../manifest.json">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="search.css">
+</head>
+<body class="search-layout">
+    <a href="#searchPage" class="skip-link">Skip to main content</a>
+
+    <header class="top-nav">
+        <img src="../../assets/logos/logo.svg" alt="House-of-Coral Logo" class="nav-logo">
+        <nav aria-label="Main navigation">
+            <a href="../dashboard/index.html">Dashboard</a>
+            <a href="../profile/index.html">Profile</a>
+        </nav>
+    </header>
+
+    <main id="searchPage" aria-labelledby="searchHeading">
+        <section class="search-container">
+            <h1 id="searchHeading" class="visually-hidden">Search House-of-Coral</h1>
+            <form id="searchForm" role="search">
+                <div class="search-input-wrapper">
+                    <select id="searchScope" name="scope" aria-label="Search scope">
+                        <option value="all">Everything</option>
+                        <option value="stage">The Stage</option>
+                        <option value="rhythm">Rhythm Hub</option>
+                        <option value="global">Global Link</option>
+                        <option value="heart">HeartStrings</option>
+                        <option value="bazaar">Bazaar</option>
+                        <option value="terra">TerraHouse</option>
+                        <option value="arena">Arena</option>
+                        <option value="jubilee">Jubilee</option>
+                    </select>
+                    <input type="search" id="searchInput" name="q" placeholder="Search (Ctrl+K)..." autocomplete="off">
+                    <button type="button" id="clearSearch" aria-label="Clear">×</button>
+                    <button type="button" id="voiceSearch" aria-label="Voice search">🎤</button>
+                    <button type="submit">Search</button>
+                </div>
+            </form>
+            <div id="searchSuggestions" role="listbox"></div>
+        </section>
+
+        <section id="advancedFilters" aria-label="Advanced filters">
+            <div class="filter-controls">
+                <label for="minPrice" class="visually-hidden">Min Price</label>
+                <input type="number" id="minPrice" placeholder="Min Price">
+                <label for="maxPrice" class="visually-hidden">Max Price</label>
+                <input type="number" id="maxPrice" placeholder="Max Price">
+                
+                <label for="countryFilter" class="visually-hidden">Country</label>
+                <select id="countryFilter"><option>Country</option></select>
+                
+                <label for="verifiedOnly" class="visually-hidden">Verified Only</label>
+                <input type="checkbox" id="verifiedOnly"> Verified Only
+                
+                <button type="button" id="resetFilters">Reset</button>
+                <button type="button" id="saveSearch">⭐ Save Search</button>
+            </div>
+        </section>
+
+        <section id="resultsSection" aria-labelledby="resultsHeading">
+            <div id="statsBar" aria-live="polite"></div>
+            
+            <div id="loadingStates" hidden>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+
+            <div id="resultsFeed" class="results-grid"></div>
+
+            <div id="emptyState" class="empty-state" hidden>
+                <p>No results found.</p>
+                <button type="button" onclick="window.location.href='../bazaar/index.html'">Browse Marketplace</button>
+            </div>
+
+            <div id="errorState" class="error-state" hidden role="alert"></div>
+
+            <nav aria-label="Pagination">
+                <button id="loadMore">Load More</button>
+                <ul class="pagination-list" id="paginationControls">
+                    <li><button type="button" aria-current="page">1</button></li>
+                    <li><button type="button">2</button></li>
+                </ul>
+            </nav>
+        </section>
+
+        <section id="discovery" aria-label="Discovery">
+            <div id="searchHistory"><h3>Recent Searches</h3></div>
+            <div id="popularCategories"><h3>Browse Categories</h3></div>
+        </section>
+    </main>
+
+    <footer class="search-footer">
+        <nav aria-label="Infrastructure links">
+            <a href="../legal/privacy.html">Privacy</a> | 
+            <a href="../legal/security-policy.html">Security Policy</a> | 
+            <a href="../support/api-status.html">API Status</a> | 
+            <a href="../support/contact.html">Contact</a>
+        </nav>
+    </footer>
+
+    <script src="search.js" defer></script>
+</body>
+</html>
