@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="color-scheme" content="dark light" />
+    <meta name="robots" content="index,follow" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true">
+    
+    <title>House-of-Coral | Marketplace • Real Estate • Gaming • Live Streaming • Academy</title>
+    <link rel="canonical" href="https://houseofcoral.com/" />
+    <meta name="description" content="House-of-Coral: A unified ecosystem of 8 digital pillars." />
+    <meta name="keywords" content="House-of-Coral, Marketplace, Real Estate, Gaming, Live Streaming, Social Network, Education, Finance, Digital Ecosystem" />
+    <meta name="author" content="House-of-Coral Team" />
+    <meta name="application-name" content="House-of-Coral">
+    <meta name="application-url" content="https://houseofcoral.com">
+    <meta name="version" content="1.0.0">
+    <meta name="build" content="production">
+    
+    <!-- Security & Performance -->
+    <meta http-equiv="Referrer-Policy" content="strict-origin">
+    <link rel="preload" href="/assets/styles/theme.css" as="style">
+    <link rel="preload" href="/assets/images/logo.png" as="image">
+    
+    <!-- Favicons & Icons -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/icon-512.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+    <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#2d3436" />
+    
+    <!-- Open Graph & Twitter -->
+    <meta property="og:title" content="House-of-Coral" />
+    <meta property="og:description" content="One Platform. Eight Powerful Digital Pillars." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://houseofcoral.com/" />
+    <meta property="og:site_name" content="House-of-Coral" />
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="/assets/images/og-image.png" />
+    <meta property="og:image:secure_url" content="https://houseofcoral.com/assets/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="House-of-Coral Platform">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="House-of-Coral">
+    <meta name="twitter:description" content="One Platform. Eight Powerful Digital Pillars.">
+    <meta name="twitter:image" content="/assets/images/og-image.png">
+    <meta name="twitter:image:alt" content="House-of-Coral Platform">
+    <meta name="twitter:site" content="@HouseOfCoral">
+    <meta name="twitter:creator" content="@HouseOfCoral">
+    
+    <!-- PWA & Theme -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1117">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-TileColor" content="#2d3436" />
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="msapplication-tooltip" content="House-of-Coral">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "House-of-Coral",
+      "url": "https://houseofcoral.com/",
+      "logo": "https://houseofcoral.com/assets/images/logo.png",
+      "description": "Unified ecosystem of eight digital pillars.",
+      "foundingDate": "2026"
+    }
+    </script>
+
+    <script> 
+      try {
+        const savedTheme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); 
+        document.documentElement.dataset.theme = savedTheme;
+      } catch {}
+    </script>
+    
+    <link rel="stylesheet" href="/assets/styles/theme.css" />
+  </head>
+  <body class="hoc-loading">
+    <a class="skip-link" href="#root">Skip to content</a>
+    <div id="sr-announcer" aria-live="polite" aria-atomic="true" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;"></div>
+    
+    <div id="root" aria-live="polite" data-app="house-of-coral">
+      <div class="loading-screen" role="status" aria-label="Loading platform" aria-atomic="true">
+        <img src="/assets/images/logo.png" alt="House-of-Coral Logo" class="loading-logo" />
+        <div class="spinner" role="progressbar" aria-valuenow="0" aria-valuetext="Loading" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+        <div id="loading-text">Loading Core Engine...</div>
+        <small class="loading-version">Version 1.0.0</small>
+      </div>
+    </div>
+
+    <div id="error-root"></div>
+    <div id="modal-root"></div>
+    <div id="toast-root"></div>
+    <div id="tooltip-root"></div>
+    <div id="drawer-root"></div>
+    <div id="notification-root"></div>
+    <div id="overlay-root"></div>
+    <div id="context-menu-root"></div>
+    <div id="offline-banner" aria-live="assertive"></div>
+    <div id="analytics-root"></div>
+
+    <script>
+      const messages = ["Loading Core Engine...", "Loading Bazaar...", "Loading Arena...", "Loading Stage...", "Loading Global Link...", "Loading Academy...", "Loading Treasury...", "Preparing Dashboard..."];
+      let i = 0;
+      const interval = setInterval(() => {
+        const el = document.getElementById("loading-text");
+        if (el && i < messages.length) el.innerText = messages[i++];
+      }, 800);
+      window.addEventListener("load", () => clearInterval(interval));
+      window.addEventListener("offline", () => document.getElementById("offline-banner").innerText = "You are offline");
+      window.addEventListener("online", () => document.getElementById("offline-banner").innerText = "");
+    </script>
+
+    <noscript>JavaScript is required to run House-of-Coral.</noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
