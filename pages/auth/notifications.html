@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | House-of-Coral</title>
+    
+    <meta name="description" content="Manage your House-of-Coral activity, alerts, and system updates.">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="theme-color" content="#0d1117">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://api.houseofcoral.com;">
+    
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="manifest" href="../../manifest.json">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="notifications.css">
+</head>
+<body class="notifications-layout">
+    <a href="#notificationsPage" class="skip-link">Skip to main content</a>
+
+    <div id="loadingOverlay" hidden role="status" aria-live="polite" aria-atomic="true">
+        <div class="loading-spinner"></div>
+        <p>Loading notifications...</p>
+    </div>
+
+    <header class="top-nav">
+        <img src="../../assets/logos/logo.svg" alt="House-of-Coral Logo" class="nav-logo">
+        <nav aria-label="Main navigation">
+            <a href="../dashboard/index.html">Dashboard</a>
+            <a href="../search/index.html">Search</a>
+            <a href="../profile/index.html">Profile</a>
+            <span class="nav-badge" aria-label="12 unread notifications">🔔 12</span>
+        </nav>
+    </header>
+
+    <main id="notificationsPage" aria-labelledby="notificationsHeading">
+        <div id="notificationMessage" role="alert" aria-live="polite" aria-atomic="true"></div>
+        
+        <header class="page-header">
+            <h1 id="notificationsHeading">Notifications</h1>
+            <div id="liveStatus" aria-live="polite">Connected | Auto Refresh On</div>
+            <div class="header-actions">
+                <button type="button" id="markAllRead">Mark all read</button>
+                <button type="button" id="settingsBtn">Settings</button>
+            </div>
+        </header>
+
+        <section id="notificationStats" aria-label="Notification Statistics">
+            <div class="stat-card"><h3>Unread</h3><p id="unreadCount" aria-live="polite">0</p></div>
+            <div class="stat-card"><h3>Total</h3><p id="totalCount" aria-live="polite">0</p></div>
+            <p>Showing <span id="resultCounter" aria-live="polite">0</span> notifications</p>
+        </section>
+
+        <section id="notificationControls" aria-label="Management tools">
+            <label for="notificationSearch" class="visually-hidden">Search notifications</label>
+            <input type="search" id="notificationSearch" name="notificationSearch" placeholder="Search notifications (Press N)">
+            
+            <label for="sortNotifications" class="visually-hidden">Sort notifications</label>
+            <select id="sortNotifications" name="sortNotifications">
+                <option value="newest">Newest</option>
+                <option value="unread">Unread</option>
+            </select>
+            
+            <label><input type="checkbox" id="selectAllNotifications" name="selectAllNotifications"> Select All</label>
+            <button type="button" id="archiveSelected">Archive</button>
+            <button type="button" id="deleteSelected">Delete</button>
+        </section>
+
+        <nav class="tabs" role="tablist" aria-label="Notification Categories">
+            <button type="button" role="tab" id="allTabBtn" aria-controls="allTab" aria-selected="true" tabindex="0">All</button>
+            <button type="button" role="tab" id="sysTabBtn" aria-controls="systemTab" aria-selected="false" tabindex="-1">System</button>
+            <button type="button" role="tab" id="bazaarTabBtn" aria-controls="bazaarTab" aria-selected="false" tabindex="-1">Bazaar</button>
+            <button type="button" role="tab" id="walletTabBtn" aria-controls="walletTab" aria-selected="false" tabindex="-1">Wallet</button>
+            <button type="button" role="tab" id="arenaTabBtn" aria-controls="arenaTab" aria-selected="false" tabindex="-1">Arena</button>
+            <button type="button" role="tab" id="activityTabBtn" aria-controls="activityTab" aria-selected="false" tabindex="-1">Activity</button>
+            <button type="button" role="tab" id="stageTabBtn" aria-controls="stageTab" aria-selected="false" tabindex="-1">Stage</button>
+            <button type="button" role="tab" id="rhythmTabBtn" aria-controls="rhythmTab" aria-selected="false" tabindex="-1">Rhythm</button>
+            <button type="button" role="tab" id="globalTabBtn" aria-controls="globalTab" aria-selected="false" tabindex="-1">Global</button>
+            <button type="button" role="tab" id="heartTabBtn" aria-controls="heartTab" aria-selected="false" tabindex="-1">HeartStrings</button>
+            <button type="button" role="tab" id="terraTabBtn" aria-controls="terraTab" aria-selected="false" tabindex="-1">Terra</button>
+            <button type="button" role="tab" id="academyTabBtn" aria-controls="academyTab" aria-selected="false" tabindex="-1">Academy</button>
+            <button type="button" role="tab" id="securityTabBtn" aria-controls="securityTab" aria-selected="false" tabindex="-1">Security</button>
+        </nav>
+
+        <section id="notificationFeed" aria-busy="false">
+            <template id="notificationTemplate">
+                <li class="notification-item" data-category="" data-read="false">
+                    <span class="notification-icon" aria-hidden="true">🔔</span>
+                    <div class="notification-content">
+                        <h3></h3><p></p><time datetime=""></time>
+                    </div>
+                    <div class="notification-actions">
+                        <button type="button" class="notification-open" aria-label="Open notification">Open</button>
+                    </div>
+                </li>
+            </template>
+
+            <div id="allTab" role="tabpanel" aria-labelledby="allTabBtn" tabindex="0">
+                <ul id="notificationList" role="list" aria-live="polite" aria-relevant="additions removals"></ul>
+            </div>
+            
+            <div id="systemTab" role="tabpanel" aria-labelledby="sysTabBtn" hidden tabindex="-1"></div>
+            <div id="bazaarTab" role="tabpanel" aria-labelledby="bazaarTabBtn" hidden tabindex="-1"></div>
+            <div id="walletTab" role="tabpanel" aria-labelledby="walletTabBtn" hidden tabindex="-1"></div>
+            <div id="arenaTab" role="tabpanel" aria-labelledby="arenaTabBtn" hidden tabindex="-1"></div>
+            <div id="activityTab" role="tabpanel" aria-labelledby="activityTabBtn" hidden tabindex="-1"></div>
+            <div id="stageTab" role="tabpanel" aria-labelledby="stageTabBtn" hidden tabindex="-1"></div>
+            <div id="rhythmTab" role="tabpanel" aria-labelledby="rhythmTabBtn" hidden tabindex="-1"></div>
+            <div id="globalTab" role="tabpanel" aria-labelledby="globalTabBtn" hidden tabindex="-1"></div>
+            <div id="heartTab" role="tabpanel" aria-labelledby="heartTabBtn" hidden tabindex="-1"></div>
+            <div id="terraTab" role="tabpanel" aria-labelledby="terraTabBtn" hidden tabindex="-1"></div>
+            <div id="academyTab" role="tabpanel" aria-labelledby="academyTabBtn" hidden tabindex="-1"></div>
+            <div id="securityTab" role="tabpanel" aria-labelledby="securityTabBtn" hidden tabindex="-1"></div>
+
+            <div id="loadingState" hidden aria-hidden="true">
+                <div class="skeleton-item"></div><div class="skeleton-item"></div><div class="skeleton-item"></div>
+            </div>
+            <div id="errorState" class="error-state" role="alert" hidden>Unable to load notifications.</div>
+            <div id="emptyState" class="empty-state" hidden>
+                <img src="../../assets/illustrations/no-notifs.svg" alt="No notifications">
+                <p>You're all caught up!</p>
+                <button type="button" id="refreshFeed">Refresh</button>
+            </div>
+
+            <div id="loadMoreContainer"><button id="loadMoreNotifications" type="button">Load More</button></div>
+            <nav id="notificationPagination" aria-label="Notification Pagination" hidden></nav>
+        </section>
+
+        <section id="notificationPreferences" aria-labelledby="preferencesHeading">
+            <h2 id="preferencesHeading">Notification Preferences</h2>
+            <label><input type="checkbox" id="emailNotifications" name="email"> Email</label>
+            <label><input type="checkbox" id="pushNotifications" name="push"> Push Notifications</label>
+            <label><input type="checkbox" id="marketingNotifications" name="marketing"> Marketing</label>
+            <label><input type="checkbox" id="securityAlerts" name="security"> Security Alerts</label>
+            <label><input type="checkbox" id="smsNotifications" name="sms"> SMS</label>
+        </section>
+
+        <div id="confirmDeleteModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText" hidden>
+            <h2 id="confirmTitle">Delete Notifications</h2>
+            <p id="confirmText">Are you sure you want to delete all selected notifications?</p>
+            <button type="button" id="confirmDeleteBtn">Confirm</button>
+            <button type="button" id="cancelDeleteBtn">Cancel</button>
+        </div>
+
+        <div id="notificationModal" role="dialog" aria-modal="true" aria-labelledby="modTitle" aria-describedby="modDesc" hidden>
+            <h2 id="modTitle">Notification Details</h2>
+            <div id="modDesc"></div>
+            <button type="button" id="closeModal" aria-label="Close">Close</button>
+        </div>
+    </main>
+
+    <footer class="notifications-footer">
+        <nav aria-label="Footer Navigation">
+            <a href="../legal/terms.html">Terms</a> | <a href="../legal/privacy.html">Privacy</a> | 
+            <a href="../legal/security-policy.html">Security Policy</a> | <a href="../support/api-status.html">API Status</a> |
+            <a href="../support/help.html">Help Center</a> | <a href="../support/contact.html">Contact</a>
+        </nav>
+    </footer>
+
+    <script src="notifications.js" defer></script>
+</body>
+</html>
