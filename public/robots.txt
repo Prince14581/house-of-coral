@@ -1,0 +1,204 @@
+# House-of-Coral Production Robots.txt
+
+# --- Standard Crawlers ---
+User-agent: *
+Allow: /
+
+# Essential PWA & SEO Assets
+Allow: /manifest.json
+Allow: /favicon.ico
+Allow: /browserconfig.xml
+Allow: /robots.txt
+Allow: /ads.txt
+Allow: /security.txt
+Allow: /.well-known/
+
+# Rendering Resources
+Allow: /assets/
+Allow: /assets/styles/
+Allow: /assets/scripts/
+Allow: /images/
+Allow: /icons/
+
+# Directories - Search Engine Access
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /search/
+Disallow: /login/
+Disallow: /register/
+Disallow: /forgot-password/
+Disallow: /reset-password/
+Disallow: /dashboard/
+Disallow: /settings/
+
+# Payments, Sessions & Background Tasks
+Disallow: /payments/
+Disallow: /webhooks/
+Disallow: /sessions/
+Disallow: /cookies/
+Disallow: /workers/
+Disallow: /jobs/
+Disallow: /queue/
+Disallow: /cron/
+Disallow: /email/
+Disallow: /mail/
+Disallow: /monitoring/
+
+# Internal Docs & Infrastructure
+Disallow: /docs/
+Disallow: /swagger/
+Disallow: /openapi/
+Disallow: /graphql
+Disallow: /graphiql
+Disallow: /playground/
+Disallow: /internal/
+Disallow: /uploads/private/
+Disallow: /backup/
+Disallow: /backups/
+Disallow: /archive/
+Disallow: /archives/
+Disallow: /exports/
+Disallow: /dumps/
+Disallow: /storage/
+Disallow: /secrets/
+Disallow: /keys/
+Disallow: /vault/
+Disallow: /certificates/
+Disallow: /scripts/
+Disallow: /cgi-bin/
+
+# Development, Build & Infrastructure
+Disallow: /src/
+Disallow: /.next/
+Disallow: /dist/
+Disallow: /build/
+Disallow: /vendor/
+Disallow: /coverage/
+Disallow: /dev/
+Disallow: /staging/
+Disallow: /beta/
+Disallow: /test/
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /.vscode/
+Disallow: /.idea/
+Disallow: /node_modules/
+Disallow: /config/
+Disallow: /tmp/
+Disallow: /temp/
+Disallow: /cache/
+Disallow: /.cache/
+Disallow: /logs/
+Disallow: /.env
+Disallow: /.env.*
+
+# Preview, Draft & Health Endpoints
+Disallow: /preview/
+Disallow: /draft/
+Disallow: /health
+Disallow: /healthz
+Disallow: /ready
+Disallow: /status
+Disallow: /metrics/
+
+# Feed Endpoints
+Disallow: /feed/
+Disallow: /rss/
+Disallow: /atom.xml
+
+# Sensitive File Patterns
+Disallow: /*.bak$
+Disallow: /*.old$
+Disallow: /*.sql$
+Disallow: /*.zip$
+Disallow: /*.tar$
+Disallow: /*.gz$
+Disallow: /*.rar$
+Disallow: /*.7z$
+Disallow: /*.log$
+Disallow: /*.tmp$
+Disallow: /*.cache$
+Disallow: /*.swp$
+Disallow: /*.pem$
+Disallow: /*.key$
+Disallow: /*.crt$
+Disallow: /*.csr$
+Disallow: /*.p12$
+Disallow: /*.pfx$
+Disallow: /*.map$
+Disallow: /*.sqlite$
+Disallow: /*.sqlite3$
+Disallow: /*.db$
+Disallow: /*.json.bak$
+Disallow: /*.xml.bak$
+Disallow: /*.jks$
+Disallow: /*.keystore$
+
+# Parameter Filtering
+Disallow: /*?search=
+Disallow: /*?q=
+Disallow: /*?filter=
+Disallow: /*?sort=
+Disallow: /*?page=
+Disallow: /*?utm_
+Disallow: /*?ref=
+Disallow: /*?session=
+
+# AI Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Yandex
+Allow: /
+Crawl-delay: 2
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Bingbot-Image
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Sitemaps
+Sitemap: https://houseofcoral.com/sitemap-index.xml
+Sitemap: https://houseofcoral.com/sitemap.xml
+Sitemap: https://houseofcoral.com/sitemap-images.xml
+Sitemap: https://houseofcoral.com/sitemap-videos.xml
+Sitemap: https://houseofcoral.com/sitemap-news.xml
