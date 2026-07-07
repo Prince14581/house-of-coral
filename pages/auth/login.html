@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | House-of-Coral</title>
+    
+    <!-- SEO & Security Hardening -->
+    <meta name="description" content="Secure login to your House-of-Coral account.">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="google" content="notranslate">
+    <meta name="theme-color" content="#0d1117">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self';">
+    
+    <!-- PWA & Assets -->
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="manifest" href="../../manifest.json">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body class="auth-layout">
+
+    <noscript>
+        <p class="noscript-warning">JavaScript is required to sign in to House-of-Coral.</p>
+    </noscript>
+
+    <div id="loadingOverlay" hidden role="status" aria-live="polite" aria-atomic="true">
+        <div class="loading-spinner"></div>
+        <p>Signing you in...</p>
+    </div>
+
+    <main id="loginPage" class="auth-container">
+        <header>
+            <img src="../../assets/logos/logo.svg" alt="House-of-Coral Logo" class="auth-logo">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your House-of-Coral dashboard</p>
+        </header>
+
+        <div id="authMessage" role="alert" aria-live="polite" aria-atomic="true"></div>
+
+        <form id="loginForm" novalidate>
+            <input type="hidden" name="_csrf" id="csrfToken">
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required autocomplete="username" 
+                       spellcheck="false" maxlength="254" autofocus aria-required="true" 
+                       aria-describedby="authMessage">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required 
+                           autocomplete="current-password" spellcheck="false" maxlength="128" 
+                           aria-required="true" aria-describedby="authMessage">
+                    <button type="button" id="togglePassword" aria-label="Show password" 
+                            aria-pressed="false" aria-controls="password">👁</button>
+                </div>
+            </div>
+
+            <div id="socialLogin"></div>
+
+            <div class="form-group checkbox">
+                <label>
+                    <input type="checkbox" id="rememberMe" name="rememberMe" autocomplete="on">
+                    Remember me
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <a href="forgot-password.html">Forgot Password?</a>
+                <button type="submit" id="submitBtn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="spinner" hidden></span>
+                </button>
+            </div>
+        </form>
+
+        <footer class="auth-footer">
+            <p>Don't have an account? <a href="register.html">Create one</a></p>
+            <nav aria-label="Authentication links">
+                <a href="../legal/terms.html">Terms</a> | 
+                <a href="../legal/privacy.html">Privacy</a> | 
+                <a href="../support/support.html">Support</a> | 
+                <a href="../support/status.html">Status</a>
+            </nav>
+            <p class="copyright">&copy; 2026 House-of-Coral</p>
+        </footer>
+    </main>
+
+    <script src="../../js/auth.js" defer></script>
+</body>
+</html>
