@@ -27,8 +27,7 @@ router.post('/resolve-discrepancy/:id', async (req, res) => {
         });
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json({ error: "Resolution failed" });
-    }
+        res.status(500).json({ error: "Resolution failed" })
 });
 
 module.exports = router;
