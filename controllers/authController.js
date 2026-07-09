@@ -1,87 +1,84 @@
+const mongoose = require('mongoose');
 const User = require('../models/User');
-const AuditLog = require('../models/AuditLog');
-const bcrypt = require('bcryptjs');
+const Session = require('../models/Session');
+const AuditService = require('../core/services/auditService');
+const Logger = require('../core/services/logger');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
+const { AppError } = require('../utils/helpers');
 
 const DUMMY_HASH = '$2b$12$R9h/cIPz0gi.URNNX3kh2OPST9/zBkqquzaBjYv1x38H45h8pD.j2';
-const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS || 12);
 
 /**
- * Register: relies on express-validator middleware for sanitization/validation.
+ * Login: Atomic State Transition for Authentication Lifecycle
  */
-exports.register = async (req, res) => {
+exports.login = async (req, res, next) => {
+    const session = await mongoose.startSession();
     try {
-        const { username, email, password } = req.body;
-        
-        const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
-        const newUser = await User.create({
-            username: username.trim(),
-            email: email.trim().toLowerCase(),
-            password: hashedPassword
-        });
-
-        AuditLog.create({ 
-            action: 'REGISTER', actorId: newUser._id, collectionName: 'User', 
-            documentId: newUser._id, status: 'success',
-            metadata: { ip: req.ip, userAgent: req.get('user-agent') }
-        }).catch(err => console.error('AuditLog Register Fail:', err));
-
-        res.status(201).json({ status: 'success', userId: newUser._id });
-    } catch (error) {
-        if (error.code === 11000) return res.status(409).json({ status: 'error', message: 'Email already registered.' });
-        console.error({ route: req.originalUrl, method: req.method, error: error.message, stack: error.stack });
-        res.status(500).json({ status: 'error', message: 'Registration failed.' });
-    }
-};
-/**
- * Login: incorporates JTI, explicit algorithm, and standard claims.
- */ exports.login = async (req, res) => {
-    try {
-        // Configuration safety check
-        if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not configured.');
-
-        const { email, password } = req.body;
-        const normalizedEmail = email.trim().toLowerCase();
-        
-        const user = await User.findOne({ email: normalizedEmail, deletedAt: null, status: 'active' });
-        const isMatch = await bcrypt.compare(password, user ? user.password : DUMMY_HASH);
-        
-        if (!user || !isMatch) {
-            AuditLog.create({ 
-                action: 'LOGIN', status: 'failed', 
-                metadata: { email: normalizedEmail, ip: req.ip, userAgent: req.get('user-agent') } 
-            }).catch(err => console.error('AuditLog Login Fail:', err));
-            return res.status(401).json({ status: 'error', message: 'Invalid credentials.' });
-        }
-
-        const token = jwt.sign(
-            { sub: user._id.toString(), role: user.role }, 
-            process.env.JWT_SECRET, 
-            { 
-                algorithm: 'HS256',
-                jwtid: crypto.randomUUID(),
-                expiresIn: '15m', 
-                issuer: 'House-of-Coral', 
-                audience: 'house-of-coral-users' 
+        let accessToken, refreshToken, user;
+        await session.withTransaction(async () => {
+            const { email, password } = req.body;
+            user = await User.findOne({ email: email.trim().toLowerCase(), status: 'active', isDeleted: false })
+                .select('+passwordHash +tokenVersion').session(session);
+            
+            // 1. Timing-attack mitigation
+            if (!user) {
+                await bcrypt.compare(password, DUMMY_HASH);
+                await AuditService.log(session, { action: 'LOGIN', status: 'failed', metadata: { email, ip: req.ip } });
+                throw new AppError('Invalid credentials', 401);
             }
-        );
 
-        AuditLog.create({ 
-            action: 'LOGIN', actorId: user._id, collectionName: 'User', 
-            documentId: user._id, status: 'success',
-            metadata: { ip: req.ip, userAgent: req.get('user-agent') }
-        }).catch(err => console.error('AuditLog Login Success Fail:', err));
+            if (user.isLocked()) throw new AppError('Account locked', 423);
+            if (!(await user.comparePassword(password))) {
+                user.recordFailedLogin(); await user.save({ session });
+                await AuditService.log(session, { actorId: user._id, action: 'LOGIN', status: 'failed', metadata: { ip: req.ip } });
+                throw new AppError('Invalid credentials', 401);
+            }
+            if (!user.verification.email) throw new AppError('Verify email first', 403);
 
-        res.status(200).json({ 
-            status: 'success', 
-            token, 
-            user: { id: user._id, username: user.username, email: user.email, role: user.role } 
+            // 2. Token Generation
+            accessToken = jwt.sign(
+                { sub: user._id.toString(), role: user.role, tokenVersion: user.tokenVersion },
+                process.env.JWT_SECRET,
+                { algorithm: 'HS256', jwtid: crypto.randomUUID(), expiresIn: '15m', issuer: 'House-of-Coral', audience: 'House-of-Coral' }
+            );
+
+            const jti = crypto.randomUUID();
+            refreshToken = jwt.sign(
+                { sub: user._id.toString(), tokenVersion: user.tokenVersion },
+                process.env.JWT_REFRESH_SECRET,
+                { jwtid: jti, expiresIn: '30d', issuer: 'House-of-Coral', audience: 'House-of-Coral' }
+            );
+
+            // 3. Persistent Session Creation
+            await Session.create([{
+                userId: user._id,
+                jti,
+                tokenHash: crypto.createHash('sha256').update(refreshToken).digest('hex'),
+                userAgent: req.get('user-agent'),
+                ip: req.ip,
+                expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+            }], { session });
+
+            // 4. Lifecycle Reset
+            user.resetFailedLoginAttempts();
+            user.markLogin(req.ip, req.get('user-agent'));
+            await user.save({ session });
+            await AuditService.log(session, {
+                actorId: user._id, action: 'LOGIN', status: 'success',
+                metadata: { ip: req.ip, requestId: req.id, jti }
+            });
         });
-    } catch (error) {
-        console.error({ route: req.originalUrl, method: req.method, error: error.message, stack: error.stack });
-        res.status(500).json({ status: 'error', message: 'Login failed.' });
-    }
-};
 
-Modules:Exports/router.post('/register', authController.register);router.post('/register', authController.register);
+        // 5. Finalize response
+        res.cookie('refreshToken', refreshToken, { 
+            httpOnly: true, secure: process.env.NODE_ENV === 'production', 
+            sameSite: 'Strict', path: '/api/auth/refresh', maxAge: 30 * 24 * 60 * 60 * 1000 
+        });
+        res.status(200).json({ status: 'success', accessToken, user: { id: user._id, username: user.username } });
+    } catch (error) {
+        Logger.error('Login failed', { error, ip: req.ip });
+        next(error);
+    } finally { session.endSession(); }
+};
